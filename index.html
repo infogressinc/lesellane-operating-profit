@@ -1,416 +1,405 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>매트 영업이익 계산기</title>
-
-<style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 30px 16px;
-  font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", Arial, sans-serif;
-  background: #f3f4f6;
-  color: #111827;
-}
-
-.wrap {
-  max-width: 1180px;
-  margin: 0 auto;
-}
-
-.header {
-  background: linear-gradient(135deg, #111827, #374151);
-  color: white;
-  padding: 28px 30px;
-  border-radius: 22px;
-  margin-bottom: 22px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-}
-
-.header h1 {
-  margin: 0 0 8px;
-  font-size: 28px;
-}
-
-.header p {
-  margin: 0;
-  color: #d1d5db;
-  font-size: 15px;
-}
-
-.card {
-  background: white;
-  border-radius: 20px;
-  padding: 24px;
-  margin-bottom: 22px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.07);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
-
-label {
-  display: block;
-  font-weight: 700;
-  margin-bottom: 8px;
-  font-size: 15px;
-}
-
-.input-box input {
-  width: 100%;
-  height: 52px;
-  border: 1px solid #d1d5db;
-  border-radius: 14px;
-  padding: 0 15px;
-  font-size: 18px;
-  outline: none;
-}
-
-.input-box input:focus {
-  border-color: #111827;
-  box-shadow: 0 0 0 3px rgba(17,24,39,0.08);
-}
-
-.sub {
-  margin-top: 7px;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.summary {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-}
-
-.summary-item {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 16px;
-}
-
-.summary-item span {
-  display: block;
-  font-size: 13px;
-  color: #6b7280;
-  margin-bottom: 6px;
-}
-
-.summary-item strong {
-  font-size: 18px;
-}
-
-.table-wrap {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 980px;
-}
-
-th {
-  background: #111827;
-  color: white;
-  padding: 14px 10px;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-td {
-  padding: 14px 10px;
-  border-bottom: 1px solid #e5e7eb;
-  text-align: center;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-tr:hover td {
-  background: #f9fafb;
-}
-
-.product {
-  font-weight: 800;
-  text-align: left;
-}
-
-.profit {
-  font-weight: 900;
-  color: #dc2626;
-}
-
-.cash {
-  color: #2563eb;
-  font-weight: 800;
-}
-
-.vat {
-  color: #059669;
-  font-weight: 800;
-}
-
-.notice {
-  font-size: 13px;
-  color: #6b7280;
-  line-height: 1.65;
-}
-
-button {
-  border: 0;
-  background: #111827;
-  color: white;
-  padding: 13px 18px;
-  border-radius: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  margin-right: 8px;
-}
-
-button.secondary {
-  background: #6b7280;
-}
-
-@media (max-width: 800px) {
-  .grid,
-  .summary {
-    grid-template-columns: 1fr;
-  }
-
-  .header h1 {
-    font-size: 23px;
-  }
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>매트 영업이익 계산기</title>
+  <style>
+    :root {
+      --bg: #f6f3ee;
+      --card: #ffffff;
+      --ink: #222222;
+      --muted: #77716a;
+      --line: #e6dfd5;
+      --accent: #9b7b5f;
+      --accent2: #2f2a26;
+      --soft: #f2ece4;
+      --good: #173f2f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #faf8f4 0%, var(--bg) 100%);
+      color: var(--ink);
+    }
+    .wrap { max-width: 1480px; margin: 0 auto; padding: 34px 20px 60px; }
+    .hero {
+      display: flex; justify-content: space-between; gap: 20px; align-items: flex-end;
+      margin-bottom: 22px;
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(26px, 4vw, 42px); letter-spacing: -0.04em; }
+    .desc { margin: 0; color: var(--muted); line-height: 1.65; font-size: 15px; }
+    .badge {
+      padding: 10px 14px; border: 1px solid var(--line); background: rgba(255,255,255,.75);
+      border-radius: 999px; color: var(--accent2); font-size: 13px; white-space: nowrap;
+    }
+    .panel {
+      background: rgba(255,255,255,.86); border: 1px solid var(--line); border-radius: 24px;
+      box-shadow: 0 16px 50px rgba(38, 31, 25, .08); overflow: hidden; margin-bottom: 22px;
+    }
+    .panel-head {
+      padding: 18px 20px; background: var(--accent2); color: #fff;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .panel-head h2 { margin: 0; font-size: 18px; letter-spacing: -0.02em; }
+    .panel-head span { color: #d8cabc; font-size: 13px; }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 1240px; }
+    th, td { border-bottom: 1px solid var(--line); padding: 12px 10px; text-align: right; font-size: 14px; }
+    th { background: #fbf8f3; color: #5d554d; font-weight: 700; white-space: nowrap; position: sticky; top: 0; z-index: 1; }
+    td:first-child, th:first-child { text-align: left; position: sticky; left: 0; background: #fff; z-index: 2; min-width: 210px; }
+    th:first-child { background: #fbf8f3; z-index: 3; }
+    tr:hover td { background: #fffaf3; }
+    tr:hover td:first-child { background: #fff7ed; }
+    input[type="text"], input[type="number"] {
+      width: 112px; border: 1px solid #d9cfc2; border-radius: 12px; padding: 10px 9px;
+      font-size: 14px; text-align: right; background: #fff; color: var(--ink); outline: none;
+    }
+    input[type="text"] { text-align: left; width: 190px; }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(155,123,95,.14); }
+    .readonly { color: #312b26; font-weight: 650; }
+    .profit { color: var(--good); font-weight: 800; }
+    .loss { color: #a13c2f; font-weight: 800; }
+    .muted { color: var(--muted); }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; padding: 16px 20px; border-top: 1px solid var(--line); background: #fffaf4; }
+    button {
+      border: 0; border-radius: 13px; padding: 11px 16px; font-weight: 700; cursor: pointer;
+      background: var(--accent2); color: #fff;
+    }
+    button.secondary { background: #e9dfd3; color: #332b25; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(210px, 1fr)); gap: 14px; margin-bottom: 22px; }
+    .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 18px; box-shadow: 0 12px 30px rgba(38,31,25,.06); }
+    .kpi small { display: block; color: var(--muted); margin-bottom: 8px; }
+    .kpi strong { display: block; font-size: 24px; letter-spacing: -0.03em; }
+    .note { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 18px 20px; color: var(--muted); line-height: 1.75; font-size: 14px; }
+    .note b { color: var(--ink); }
+    @media (max-width: 900px) {
+      .hero { align-items: flex-start; flex-direction: column; }
+      .grid { grid-template-columns: 1fr; }
+      .wrap { padding: 24px 12px 44px; }
+      .panel-head { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
 </head>
-
 <body>
-<div class="wrap">
-
-  <div class="header">
-    <h1>매트 영업이익 계산기</h1>
-    <p>공급가 · 판매가 · 시공비용만 입력하면 600size / 1200size 기준 영업이익이 자동 계산됩니다.</p>
-  </div>
-
-  <div class="card">
-    <div class="grid">
-      <div class="input-box">
-        <label>공급가</label>
-        <input id="supply" type="text" inputmode="numeric" placeholder="예: 12000">
-        <div class="sub">공급가 VAT = 공급가 × 1.1</div>
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <h1>매트 영업이익 계산기</h1>
+        <p class="desc">공급가 · 판매가 · 시공비용만 입력하면 600/1200 사이즈별 순매출, 공장가, 시공비, 장당수익, 영업이익이 자동 계산됩니다.</p>
       </div>
+      <div class="badge">공급 VAT 10% · 판매 VAT 5% · 운영비 130,000원</div>
+    </section>
 
-      <div class="input-box">
-        <label>판매가</label>
-        <input id="sell" type="text" inputmode="numeric" placeholder="예: 23500">
-        <div class="sub">판매가 VAT = 판매가 × 1.05</div>
+    <section class="grid" id="summaryCards"></section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>기본 계산표</h2>
+        <span>입력 가능 항목: 제품명, 공급가, 판매가, 시공비용</span>
       </div>
-
-      <div class="input-box">
-        <label>시공비용</label>
-        <input id="install" type="text" inputmode="numeric" placeholder="예: 5000">
-        <div class="sub">시공비용 VAT = 시공비용 × 1.1</div>
+      <div class="table-scroll">
+        <table id="mainTable">
+          <thead>
+            <tr>
+              <th>품목</th>
+              <th>공급가</th>
+              <th>공급가(VAT)</th>
+              <th>판매가</th>
+              <th>판매가(VAT 5%)</th>
+              <th>시공비용</th>
+              <th>시공장수</th>
+              <th>순매출1(현금가)</th>
+              <th>순매출2(VAT)</th>
+              <th>시공비</th>
+              <th>공장가(VAT)</th>
+              <th>마케팅·운영비</th>
+              <th>영업이익(현금)</th>
+              <th>영업이익(VAT)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
-    </div>
-
-    <div style="margin-top:18px;">
-      <button onclick="saveValues()">입력값 저장</button>
-      <button class="secondary" onclick="clearValues()">초기화</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="summary">
-      <div class="summary-item">
-        <span>공급가(VAT)</span>
-        <strong id="supplyVatView">0원</strong>
+      <div class="controls">
+        <button onclick="saveData()">현재 입력값 저장</button>
+        <button class="secondary" onclick="resetData()">기본값으로 초기화</button>
       </div>
-      <div class="summary-item">
-        <span>판매가(VAT)</span>
-        <strong id="sellVatView">0원</strong>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>장당수익</h2>
+        <span>현금판매 / VAT판매 기준 장당 영업이익 비교</span>
       </div>
-      <div class="summary-item">
-        <span>시공비용(VAT)</span>
-        <strong id="installVatView">0원</strong>
+      <div class="table-scroll">
+        <table id="unitTable">
+          <thead>
+            <tr>
+              <th>품목</th>
+              <th>현금판매 장당수익</th>
+              <th>VAT판매 장당수익</th>
+              <th>현금 총 영업이익</th>
+              <th>VAT 총 영업이익</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
-      <div class="summary-item">
-        <span>마케팅·운영비(VAT)</span>
-        <strong>130,000원</strong>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>가구 수별 예상 순영업이익</h2>
+        <span>30가구 ~ 80가구 기준 자동 계산</span>
       </div>
-      <div class="summary-item">
-        <span>시공장수</span>
-        <strong>600=103장 / 1200=26장</strong>
+      <div class="table-scroll">
+        <table id="forecastTable">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <div class="card table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>구분</th>
-          <th>시공장수</th>
-          <th>순매출1<br>(현금가)</th>
-          <th>순매출2<br>(VAT)</th>
-          <th>시공비</th>
-          <th>공장가(VAT)</th>
-          <th>마케팅·운영비</th>
-          <th>장당수익<br>(현금)</th>
-          <th>영업이익<br>(현금)</th>
-          <th>장당수익<br>(VAT)</th>
-          <th>영업이익<br>(VAT)</th>
-        </tr>
-      </thead>
-      <tbody id="resultBody"></tbody>
-    </table>
-  </div>
+    <section class="note">
+      <b>계산 기준</b><br>
+      · 공급가(VAT) = 공급가 × 1.1<br>
+      · 판매가(VAT) = 판매가 × 1.05<br>
+      · 시공비용(VAT) = 시공비용 × 1.1<br>
+      · 600size 시공장수 = 103장, 1200size 시공장수 = 26장<br>
+      · 현금판매 장당수익 = 판매가 - 시공비용 - (130,000 ÷ 시공장수) - 공급가<br>
+      · VAT판매 장당수익 = 판매가(VAT) ÷ 0.909 - 시공비용(VAT) ÷ 0.909 - (130,000 ÷ 시공장수) - 공급가(VAT) ÷ 0.909 - (판매가VAT × 0.091) + (시공비용VAT × 0.091) + (공급가VAT × 0.090)<br>
+      · 영업이익 = 장당수익 × 시공장수
+    </section>
+  </main>
 
-  <div class="card notice">
-    <strong>계산 기준</strong><br>
-    현금판매 장당수익 = 판매가 - 시공비용 - 마케팅운영비/장수 - 공급가<br>
-    VAT판매 장당수익 = 판매가(VAT)/0.909 - 시공비용(VAT)/0.909 - 마케팅운영비/장수 - 공급가(VAT)/0.909 - 판매가VAT×0.091 + 시공비용VAT×0.091 + 공급가VAT×0.090<br>
-    600size는 103장, 1200size는 26장 기준으로 마케팅·운영비가 자동 분배됩니다.
-  </div>
+  <script>
+    const STORAGE_KEY = 'mat_profit_calculator_v4';
+    const MARKETING_COST = 130000;
+    const SALE_VAT_RATE = 1.05;
+    const SUPPLY_VAT_RATE = 1.10;
+    const INSTALL_VAT_RATE = 1.10;
 
-</div>
+    const defaultRows = [
+      { name: '600 SIZE (22T) : TPU', supply: 12000, sale: 22000, install: 5500, qty: 103 },
+      { name: '600 SIZE (22T) : PU', supply: 14000, sale: 24000, install: 5500, qty: 103 },
+      { name: '1200 SIZE (24T) : TPU', supply: 58000, sale: 109000, install: 24000, qty: 26 },
+      { name: '1200 SIZE (24T) : PU', supply: 65000, sale: 119000, install: 24000, qty: 26 },
+    ];
 
-<script>
-const MARKETING_COST = 130000;
+    let rows = loadData();
 
-const products = [
-  { name: "600size TPU", qty: 103 },
-  { name: "600size PU", qty: 103 },
-  { name: "1200size TPU", qty: 26 },
-  { name: "1200size PU", qty: 26 }
-];
+    function loadData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) return JSON.parse(saved);
+      } catch (e) {}
+      return structuredClone(defaultRows);
+    }
 
-const supplyInput = document.getElementById("supply");
-const sellInput = document.getElementById("sell");
-const installInput = document.getElementById("install");
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+      alert('현재 입력값이 이 브라우저에 저장되었습니다.');
+    }
 
-function onlyNumber(value) {
-  return Number(String(value).replace(/[^0-9]/g, "")) || 0;
-}
+    function resetData() {
+      if (!confirm('기본값으로 초기화할까요?')) return;
+      rows = structuredClone(defaultRows);
+      localStorage.removeItem(STORAGE_KEY);
+      render();
+    }
 
-function formatWon(num) {
-  return Math.round(num).toLocaleString("ko-KR") + "원";
-}
+    function n(value) {
+      const num = Number(String(value).replace(/[^0-9.-]/g, ''));
+      return Number.isFinite(num) ? num : 0;
+    }
 
-function calc() {
-  const supply = onlyNumber(supplyInput.value);
-  const sell = onlyNumber(sellInput.value);
-  const install = onlyNumber(installInput.value);
+    function money(value) {
+      const rounded = Math.round(value);
+      return rounded.toLocaleString('ko-KR') + '원';
+    }
 
-  const supplyVat = supply * 1.1;
-  const sellVat = sell * 1.05;
-  const installVat = install * 1.1;
+    function cssProfit(value) {
+      return value < 0 ? 'loss' : 'profit';
+    }
 
-  document.getElementById("supplyVatView").textContent = formatWon(supplyVat);
-  document.getElementById("sellVatView").textContent = formatWon(sellVat);
-  document.getElementById("installVatView").textContent = formatWon(installVat);
+    function calc(row) {
+      const supplyVat = row.supply * SUPPLY_VAT_RATE;
+      const saleVat = row.sale * SALE_VAT_RATE;
+      const installVat = row.install * INSTALL_VAT_RATE;
 
-  let html = "";
+      const grossCash = row.qty * row.sale;
+      const grossVat = row.qty * saleVat;
+      const installTotal = row.qty * row.install;
+      const factoryVat = row.qty * supplyVat;
+      const marketingPerPiece = MARKETING_COST / row.qty;
 
-  products.forEach(item => {
-    const qty = item.qty;
-    const marketingPerPiece = MARKETING_COST / qty;
+      const unitCashProfit =
+        row.sale
+        - row.install
+        - marketingPerPiece
+        - row.supply;
 
-    const netSalesCash = sell * qty;
-    const netSalesVat = sellVat * qty;
-    const installTotal = install * qty;
-    const factoryVatTotal = supplyVat * qty;
+      const vatBase =
+        (saleVat / 0.909)
+        - (installVat / 0.909)
+        - marketingPerPiece
+        - (supplyVat / 0.909);
 
-    const cashPerProfit = sell - install - marketingPerPiece - supply;
-    const cashOperatingProfit = cashPerProfit * qty;
+      const vatCorrection =
+        - (saleVat * 0.091)
+        + (installVat * 0.091)
+        + (supplyVat * 0.090);
 
-    /*
-      최종 수정된 VAT 장당수익 계산식
+      const unitVatProfit = vatBase + vatCorrection;
 
-      1차:
-      판매가(VAT)/0.909
-      - 시공비용(VAT)/0.909
-      - 마케팅운영비/장수
-      - 공급가(VAT)/0.909
+      const totalCashProfit = unitCashProfit * row.qty;
+      const totalVatProfit = unitVatProfit * row.qty;
 
-      2차 보정:
-      - 판매가VAT x 0.091
-      + 시공비용VAT x 0.091
-      + 공급가VAT x 0.090
-    */
+      return {
+        supplyVat,
+        saleVat,
+        installVat,
+        grossCash,
+        grossVat,
+        installTotal,
+        factoryVat,
+        marketingPerPiece,
+        unitCashProfit,
+        unitVatProfit,
+        totalCashProfit,
+        totalVatProfit
+      };
+    }
 
-    const vatBase =
-      (sellVat / 0.909)
-      - (installVat / 0.909)
-      - marketingPerPiece
-      - (supplyVat / 0.909);
+    function updateRow(index, key, value) {
+      rows[index][key] = key === 'name' ? value : n(value);
+      recalcOnly();
+    }
 
-    const vatCorrection =
-      - (sellVat * 0.091)
-      + (installVat * 0.091)
-      + (supplyVat * 0.090);
+    function input(index, key, value, type = 'number') {
+      const val = type === 'number' ? Math.round(value) : value;
+      const inputMode = type === 'number' ? ' inputmode="numeric"' : '';
+      return `<input type="${type}"${inputMode} value="${val}" oninput="updateRow(${index}, '${key}', this.value)">`;
+    }
 
-    const vatPerProfit = vatBase + vatCorrection;
-    const vatOperatingProfit = vatPerProfit * qty;
+    function setCell(id, value, className = 'readonly') {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = value;
+      el.className = className;
+    }
 
-    html += `
-      <tr>
-        <td class="product">${item.name}</td>
-        <td>${qty}장</td>
-        <td>${formatWon(netSalesCash)}</td>
-        <td>${formatWon(netSalesVat)}</td>
-        <td>${formatWon(installTotal)}</td>
-        <td>${formatWon(factoryVatTotal)}</td>
-        <td>${formatWon(MARKETING_COST)}<br><small>장당 ${formatWon(marketingPerPiece)}</small></td>
-        <td class="cash">${formatWon(cashPerProfit)}</td>
-        <td class="profit">${formatWon(cashOperatingProfit)}</td>
-        <td class="vat">${formatWon(vatPerProfit)}</td>
-        <td class="profit">${formatWon(vatOperatingProfit)}</td>
-      </tr>
-    `;
-  });
+    function renderMainTable() {
+      const tbody = document.querySelector('#mainTable tbody');
+      tbody.innerHTML = rows.map((row, i) => {
+        const c = calc(row);
+        return `<tr>
+          <td>${input(i, 'name', row.name, 'text')}</td>
+          <td>${input(i, 'supply', row.supply)}</td>
+          <td id="supplyVat-${i}" class="readonly">${money(c.supplyVat)}</td>
+          <td>${input(i, 'sale', row.sale)}</td>
+          <td id="saleVat-${i}" class="readonly">${money(c.saleVat)}</td>
+          <td>${input(i, 'install', row.install)}</td>
+          <td id="qty-${i}" class="readonly">${row.qty.toLocaleString('ko-KR')}장</td>
+          <td id="grossCash-${i}" class="readonly">${money(c.grossCash)}</td>
+          <td id="grossVat-${i}" class="readonly">${money(c.grossVat)}</td>
+          <td id="installTotal-${i}" class="readonly">${money(c.installTotal)}</td>
+          <td id="factoryVat-${i}" class="readonly">${money(c.factoryVat)}</td>
+          <td id="marketing-${i}" class="readonly">${money(MARKETING_COST)}</td>
+          <td id="totalCashProfit-${i}" class="${cssProfit(c.totalCashProfit)}">${money(c.totalCashProfit)}</td>
+          <td id="totalVatProfit-${i}" class="${cssProfit(c.totalVatProfit)}">${money(c.totalVatProfit)}</td>
+        </tr>`;
+      }).join('');
+    }
 
-  document.getElementById("resultBody").innerHTML = html;
-}
+    function renderUnitTable() {
+      const tbody = document.querySelector('#unitTable tbody');
+      tbody.innerHTML = rows.map(row => {
+        const c = calc(row);
+        return `<tr>
+          <td>${row.name}</td>
+          <td class="${cssProfit(c.unitCashProfit)}">${money(c.unitCashProfit)}</td>
+          <td class="${cssProfit(c.unitVatProfit)}">${money(c.unitVatProfit)}</td>
+          <td class="${cssProfit(c.totalCashProfit)}">${money(c.totalCashProfit)}</td>
+          <td class="${cssProfit(c.totalVatProfit)}">${money(c.totalVatProfit)}</td>
+        </tr>`;
+      }).join('');
+    }
 
-function saveValues() {
-  localStorage.setItem("matProfit_supply", supplyInput.value);
-  localStorage.setItem("matProfit_sell", sellInput.value);
-  localStorage.setItem("matProfit_install", installInput.value);
-  alert("입력값이 브라우저에 저장되었습니다.");
-}
+    function renderForecastTable() {
+      const counts = [30, 40, 50, 60, 70, 80];
+      const thead = document.querySelector('#forecastTable thead');
+      const tbody = document.querySelector('#forecastTable tbody');
 
-function clearValues() {
-  supplyInput.value = "";
-  sellInput.value = "";
-  installInput.value = "";
-  localStorage.removeItem("matProfit_supply");
-  localStorage.removeItem("matProfit_sell");
-  localStorage.removeItem("matProfit_install");
-  calc();
-}
+      thead.innerHTML =
+        `<tr><th>구분</th><th>품목</th>${counts.map(c => `<th>${c}가구</th>`).join('')}</tr>`;
 
-function loadValues() {
-  supplyInput.value = localStorage.getItem("matProfit_supply") || "";
-  sellInput.value = localStorage.getItem("matProfit_sell") || "";
-  installInput.value = localStorage.getItem("matProfit_install") || "";
-  calc();
-}
+      const cashRows = rows.map(row => {
+        const c = calc(row);
+        return `<tr>
+          <td class="muted">현금판매</td>
+          <td>${row.name}</td>
+          ${counts.map(cnt => `<td class="${cssProfit(c.totalCashProfit * cnt)}">${money(c.totalCashProfit * cnt)}</td>`).join('')}
+        </tr>`;
+      }).join('');
 
-[supplyInput, sellInput, installInput].forEach(input => {
-  input.addEventListener("input", calc);
-});
+      const vatRows = rows.map(row => {
+        const c = calc(row);
+        return `<tr>
+          <td class="muted">VAT판매</td>
+          <td>${row.name}</td>
+          ${counts.map(cnt => `<td class="${cssProfit(c.totalVatProfit * cnt)}">${money(c.totalVatProfit * cnt)}</td>`).join('')}
+        </tr>`;
+      }).join('');
 
-loadValues();
-</script>
+      tbody.innerHTML = cashRows + vatRows;
+    }
 
+    function renderSummaryCards() {
+      const container = document.getElementById('summaryCards');
+      container.innerHTML = rows.map(row => {
+        const c = calc(row);
+        return `<article class="kpi">
+          <small>${row.name}</small>
+          <strong class="${cssProfit(c.totalCashProfit)}">${money(c.totalCashProfit)}</strong>
+          <small>현금 기준 / VAT 기준 ${money(c.totalVatProfit)}</small>
+        </article>`;
+      }).join('');
+    }
+
+    function updateMainCalculatedCells() {
+      rows.forEach((row, i) => {
+        const c = calc(row);
+        setCell(`supplyVat-${i}`, money(c.supplyVat));
+        setCell(`saleVat-${i}`, money(c.saleVat));
+        setCell(`qty-${i}`, row.qty.toLocaleString('ko-KR') + '장');
+        setCell(`grossCash-${i}`, money(c.grossCash));
+        setCell(`grossVat-${i}`, money(c.grossVat));
+        setCell(`installTotal-${i}`, money(c.installTotal));
+        setCell(`factoryVat-${i}`, money(c.factoryVat));
+        setCell(`marketing-${i}`, money(MARKETING_COST));
+        setCell(`totalCashProfit-${i}`, money(c.totalCashProfit), cssProfit(c.totalCashProfit));
+        setCell(`totalVatProfit-${i}`, money(c.totalVatProfit), cssProfit(c.totalVatProfit));
+      });
+    }
+
+    function recalcOnly() {
+      updateMainCalculatedCells();
+      renderSummaryCards();
+      renderUnitTable();
+      renderForecastTable();
+    }
+
+    function render() {
+      renderSummaryCards();
+      renderMainTable();
+      renderUnitTable();
+      renderForecastTable();
+    }
+
+    render();
+  </script>
 </body>
 </html>
