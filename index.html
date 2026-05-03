@@ -174,7 +174,7 @@
   </main>
 
   <script>
-    const STORAGE_KEY = 'mat_profit_calculator_v1';
+    const STORAGE_KEY = 'mat_profit_calculator_v3';
     const MARKETING_COST = 130000;
     const SALE_VAT_RATE = 1.05;
     const SUPPLY_VAT_RATE = 1.10;
@@ -232,7 +232,7 @@
       const factoryVat = row.qty * supplyVat;
       const marketingPerPiece = MARKETING_COST / row.qty;
       const unitCashProfit = row.sale - row.install - marketingPerPiece - row.supply;
-      const unitVatProfit = (row.sale * VAT_DEDUCT_RATE) - (row.install * VAT_DEDUCT_RATE) - marketingPerPiece - (supplyVat * VAT_DEDUCT_RATE);
+      const unitVatProfit = (row.sale * VAT_DEDUCT_RATE) - (row.install * VAT_DEDUCT_RATE) - marketingPerPiece - ((row.supply * SUPPLY_VAT_RATE) * VAT_DEDUCT_RATE);
       const totalCashProfit = unitCashProfit * row.qty;
       const totalVatProfit = unitVatProfit * row.qty;
       return { supplyVat, saleVat, grossCash, grossVat, installTotal, factoryVat, marketingPerPiece, unitCashProfit, unitVatProfit, totalCashProfit, totalVatProfit };
