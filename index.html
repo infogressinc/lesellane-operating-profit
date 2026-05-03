@@ -240,12 +240,22 @@
 
     function updateRow(index, key, value) {
       rows[index][key] = key === 'name' ? value : n(value);
-      render();
+      // 입력 중에는 전체 테이블을 다시 그리지 않습니다.
+      // 그래야 커서가 끊기지 않고 숫자를 연속으로 입력할 수 있습니다.
+      recalcOnly();
     }
 
     function input(index, key, value, type = 'number') {
       const val = type === 'number' ? Math.round(value) : value;
-      return `<input type="${type}" value="${val}" oninput="updateRow(${index}, '${key}', this.value)">`;
+      const inputMode = type === 'number' ? ' inputmode="numeric"' : '';
+      return `<input type="${type}"${inputMode} value="${val}" oninput="updateRow(${index}, '${key}', this.value)">`;
+    }
+
+    function setCell(id, value, className = 'readonly') {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = value;
+      el.className = className;
     }
 
     function renderMainTable() {
@@ -255,18 +265,18 @@
         return `<tr>
           <td>${input(i, 'name', row.name, 'text')}</td>
           <td>${input(i, 'supply', row.supply)}</td>
-          <td class="readonly">${money(c.supplyVat)}</td>
+          <td id="supplyVat-${i}" class="readonly">${money(c.supplyVat)}</td>
           <td>${input(i, 'sale', row.sale)}</td>
-          <td class="readonly">${money(c.saleVat)}</td>
+          <td id="saleVat-${i}" class="readonly">${money(c.saleVat)}</td>
           <td>${input(i, 'install', row.install)}</td>
-          <td class="readonly">${row.qty.toLocaleString('ko-KR')}장</td>
-          <td class="readonly">${money(c.grossCash)}</td>
-          <td class="readonly">${money(c.grossVat)}</td>
-          <td class="readonly">${money(c.installTotal)}</td>
-          <td class="readonly">${money(c.factoryVat)}</td>
-          <td class="readonly">${money(MARKETING_COST)}</td>
-          <td class="${cssProfit(c.totalCashProfit)}">${money(c.totalCashProfit)}</td>
-          <td class="${cssProfit(c.totalVatProfit)}">${money(c.totalVatProfit)}</td>
+          <td id="qty-${i}" class="readonly">${row.qty.toLocaleString('ko-KR')}장</td>
+          <td id="grossCash-${i}" class="readonly">${money(c.grossCash)}</td>
+          <td id="grossVat-${i}" class="readonly">${money(c.grossVat)}</td>
+          <td id="installTotal-${i}" class="readonly">${money(c.installTotal)}</td>
+          <td id="factoryVat-${i}" class="readonly">${money(c.factoryVat)}</td>
+          <td id="marketing-${i}" class="readonly">${money(MARKETING_COST)}</td>
+          <td id="totalCashProfit-${i}" class="${cssProfit(c.totalCashProfit)}">${money(c.totalCashProfit)}</td>
+          <td id="totalVatProfit-${i}" class="${cssProfit(c.totalVatProfit)}">${money(c.totalVatProfit)}</td>
         </tr>`;
       }).join('');
     }
@@ -311,6 +321,29 @@
           <small>현금 기준 / VAT 기준 ${money(c.totalVatProfit)}</small>
         </article>`;
       }).join('');
+    }
+
+    function updateMainCalculatedCells() {
+      rows.forEach((row, i) => {
+        const c = calc(row);
+        setCell(`supplyVat-${i}`, money(c.supplyVat));
+        setCell(`saleVat-${i}`, money(c.saleVat));
+        setCell(`qty-${i}`, row.qty.toLocaleString('ko-KR') + '장');
+        setCell(`grossCash-${i}`, money(c.grossCash));
+        setCell(`grossVat-${i}`, money(c.grossVat));
+        setCell(`installTotal-${i}`, money(c.installTotal));
+        setCell(`factoryVat-${i}`, money(c.factoryVat));
+        setCell(`marketing-${i}`, money(MARKETING_COST));
+        setCell(`totalCashProfit-${i}`, money(c.totalCashProfit), cssProfit(c.totalCashProfit));
+        setCell(`totalVatProfit-${i}`, money(c.totalVatProfit), cssProfit(c.totalVatProfit));
+      });
+    }
+
+    function recalcOnly() {
+      updateMainCalculatedCells();
+      renderSummaryCards();
+      renderUnitTable();
+      renderForecastTable();
     }
 
     function render() {
