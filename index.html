@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>매트 영업이익 계산기</title>
+  <title>르셀란 영업이익 계산기</title>
   <style>
     :root {
       --bg: #f6f3ee;
@@ -13,7 +13,6 @@
       --line: #e6dfd5;
       --accent: #9b7b5f;
       --accent2: #2f2a26;
-      --soft: #f2ece4;
       --good: #173f2f;
     }
     * { box-sizing: border-box; }
@@ -86,10 +85,10 @@
   <main class="wrap">
     <section class="hero">
       <div>
-        <h1>매트 영업이익 계산기</h1>
-        <p class="desc">공급가 · 판매가 · 시공비용만 입력하면 600/1200 사이즈별 순매출, 공장가, 시공비, 장당수익, 영업이익이 자동 계산됩니다.</p>
+        <h1>르셀란 영업이익 계산기</h1>
+        <p class="desc">공급가 · 판매가 · 시공비용을 입력하면 제품별 순매출, 공장가, 시공비, 장당수익, 영업이익이 자동 계산됩니다.</p>
       </div>
-      <div class="badge">공급 VAT 10% · 판매 VAT 5% · 운영비 130,000원</div>
+      <div class="badge">공급 VAT 10% · 판매 VAT 5% · 마케팅·운영비 150,000원</div>
     </section>
 
     <section class="grid" id="summaryCards"></section>
@@ -97,7 +96,7 @@
     <section class="panel">
       <div class="panel-head">
         <h2>기본 계산표</h2>
-        <span>입력 가능 항목: 제품명, 공급가, 판매가, 시공비용</span>
+        <span>입력 가능 항목: 공급가, 판매가, 시공비용 / 시공장수는 고정</span>
       </div>
       <div class="table-scroll">
         <table id="mainTable">
@@ -167,35 +166,41 @@
       · 공급가(VAT) = 공급가 × 1.1<br>
       · 판매가(VAT) = 판매가 × 1.05<br>
       · 시공비용(VAT) = 시공비용 × 1.1<br>
-      · 600size 시공장수 = 103장, 1200size 시공장수 = 26장<br>
-      · 현금판매 장당수익 = 판매가 - 시공비용 - (130,000 ÷ 시공장수) - 공급가<br>
-      · VAT판매 장당수익 = 판매가(VAT) ÷ 0.909 - 시공비용(VAT) ÷ 0.909 - (130,000 ÷ 시공장수) - 공급가(VAT) ÷ 0.909 - (판매가VAT × 0.091) + (시공비용VAT × 0.091) + (공급가VAT × 0.090)<br>
+      · 르셀란750 / 리퍼브750 시공장수 = 62장 고정<br>
+      · 르셀란1300 / 리퍼브1300 시공장수 = 22장 고정<br>
+      · 마케팅·운영비 = 150,000원 고정<br>
+      · 현금판매 장당수익 = 판매가 - 시공비용 - (150,000 ÷ 시공장수) - 공급가<br>
+      · VAT판매 장당수익 = 판매가(VAT) ÷ 0.909 - 시공비용(VAT) ÷ 0.909 - (150,000 ÷ 시공장수) - 공급가(VAT) ÷ 0.909 - (판매가VAT × 0.091) + (시공비용VAT × 0.091) + (공급가VAT × 0.090)<br>
       · 영업이익 = 장당수익 × 시공장수
     </section>
   </main>
 
   <script>
-    const STORAGE_KEY = 'mat_profit_calculator_v4';
-    const MARKETING_COST = 130000;
+    const STORAGE_KEY = 'lesellane_profit_calculator_v1';
+    const MARKETING_COST = 150000;
     const SALE_VAT_RATE = 1.05;
     const SUPPLY_VAT_RATE = 1.10;
     const INSTALL_VAT_RATE = 1.10;
 
     const defaultRows = [
-      { name: '600 SIZE (22T) : TPU', supply: 12000, sale: 22000, install: 5500, qty: 103 },
-      { name: '600 SIZE (22T) : PU', supply: 14000, sale: 24000, install: 5500, qty: 103 },
-      { name: '1200 SIZE (24T) : TPU', supply: 58000, sale: 109000, install: 24000, qty: 26 },
-      { name: '1200 SIZE (24T) : PU', supply: 65000, sale: 119000, install: 24000, qty: 26 },
+      { name: '르셀란750', supply: 0, sale: 0, install: 0, qty: 62 },
+      { name: '르셀란1300', supply: 0, sale: 0, install: 0, qty: 22 },
+      { name: '리퍼브750', supply: 0, sale: 0, install: 0, qty: 62 },
+      { name: '리퍼브1300', supply: 0, sale: 0, install: 0, qty: 22 },
     ];
 
     let rows = loadData();
+
+    function cloneRows(data) {
+      return JSON.parse(JSON.stringify(data));
+    }
 
     function loadData() {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) return JSON.parse(saved);
       } catch (e) {}
-      return structuredClone(defaultRows);
+      return cloneRows(defaultRows);
     }
 
     function saveData() {
@@ -205,7 +210,7 @@
 
     function resetData() {
       if (!confirm('기본값으로 초기화할까요?')) return;
-      rows = structuredClone(defaultRows);
+      rows = cloneRows(defaultRows);
       localStorage.removeItem(STORAGE_KEY);
       render();
     }
@@ -296,7 +301,7 @@
       tbody.innerHTML = rows.map((row, i) => {
         const c = calc(row);
         return `<tr>
-          <td>${input(i, 'name', row.name, 'text')}</td>
+          <td class="readonly">${row.name}</td>
           <td>${input(i, 'supply', row.supply)}</td>
           <td id="supplyVat-${i}" class="readonly">${money(c.supplyVat)}</td>
           <td>${input(i, 'sale', row.sale)}</td>
